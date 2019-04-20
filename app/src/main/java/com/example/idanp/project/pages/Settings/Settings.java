@@ -1,5 +1,6 @@
-package com.example.idanp.project.pages;
+package com.example.idanp.project.pages.Settings;
 
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,7 +15,7 @@ import android.widget.TextView;
 
 import com.example.idanp.project.R;
 
-public class Settings extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class Settings extends AppCompatActivity implements AdapterView.OnItemSelectedListener, AccountDialog.SettingsAccountDialogListener {
 
     TextView personalCode;
     Button switchAccount, addSubject, applyChanges;
@@ -22,14 +23,19 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
     SpinnerAdapter spinnerAdapter;
     ScrollView subjectsList;
     ArrayAdapter<CharSequence> arrAdapterClass, arrAdapterGrade;
-
     int classCurrentPosition, gradeCurrentPosition;
+    SharedPreferences sharedPref;
+    SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
         //Initialisation
+        sharedPref = getPreferences(MODE_PRIVATE);
+        editor = sharedPref.edit();
+
         personalCode = findViewById(R.id.tvSettingsPersonalCode);
         grade = findViewById(R.id.spSettingsGrades);
         classNum = findViewById(R.id.spSettingsClasses);
@@ -42,11 +48,19 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
         arrAdapterClass = ArrayAdapter.createFromResource(this, R.array.ClassNums,android.R.layout.simple_spinner_item);
         arrAdapterClass.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         classNum.setAdapter(arrAdapterClass);
-        classNum.setOnItemSelectedListener(this);
 
         arrAdapterGrade = ArrayAdapter.createFromResource(this, R.array.GradeNums,android.R.layout.simple_spinner_item);
         arrAdapterGrade.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         grade.setAdapter(arrAdapterGrade);
+
+        //Listeners
+        switchAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openAccountDialog();
+            }
+        });
+        classNum.setOnItemSelectedListener(this);
         grade.setOnItemSelectedListener(this);
 
     }
@@ -76,4 +90,17 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
             if(adapterView.equals(grade))
                 gradeCurrentPosition = -1;
     }
+
+
+    @Override
+    public void applyChange(String id) {
+        editor.putString("PersonalCode", id);
+        editor.commit();
+    }
+
+    public void openAccountDialog(){
+        AccountDialog accountDialog = new AccountDialog();
+        accountDialog.show(getSupportFragmentManager(),"account dialog");
+    }
 }
+
