@@ -4,24 +4,29 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.example.idanp.project.R;
 
-public class AccountDialog extends AppCompatDialogFragment {
+public class SubjectDialog extends AppCompatDialogFragment {
 
-    private EditText editTextPersonalCode;
-    private SettingsAccountDialogListener listener;
+    private EditText editTextSubjectName;
+    private SettingsSubjectDialogListener listener;
+    private Button btChooseIcon;
+    private ImageView imageViewIcon;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.settings_account_dialog,null);
+        View view = inflater.inflate(R.layout.settings_subject_dialog,null);
         builder.setView(view)
                 .setTitle("Change Account")
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
@@ -33,11 +38,23 @@ public class AccountDialog extends AppCompatDialogFragment {
                 .setPositiveButton("ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        String personalCode = editTextPersonalCode.getText().toString();
-                        listener.applyChange(personalCode);
+                        String l_name = editTextSubjectName.getText().toString();
+                        //listener.applyChange(l_name, );
                     }
                 });
-        editTextPersonalCode = view.findViewById(R.id.settingsAccDgPC);
+
+        //Initialization
+        editTextSubjectName = view.findViewById(R.id.etsettingsSDName);
+        imageViewIcon = view.findViewById(R.id.ivSettingsSDIcon);
+        btChooseIcon = view.findViewById(R.id.btSettingsSDIcon);
+
+        btChooseIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
 
         return  builder.create();
     }
@@ -46,14 +63,14 @@ public class AccountDialog extends AppCompatDialogFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            listener = (SettingsAccountDialogListener) context;
+            listener = (SettingsSubjectDialogListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() +
-                    "must implement SettingsAccountDialogListener");
+                    "must implement SettingsSubjectDialogListener");
         }
     }
 
-    public interface SettingsAccountDialogListener{
-        void applyChange(String id);
+    public interface SettingsSubjectDialogListener {
+        void applyChange(String name, Uri icon);
     }
 }
