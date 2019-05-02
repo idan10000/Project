@@ -19,8 +19,6 @@ public class SubjectDialog extends AppCompatDialogFragment {
 
     private EditText editTextSubjectName;
     private SettingsSubjectDialogListener listener;
-    private Button btChooseIcon;
-    private ImageView imageViewIcon;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -28,7 +26,7 @@ public class SubjectDialog extends AppCompatDialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.settings_subject_dialog,null);
         builder.setView(view)
-                .setTitle("Change Account")
+                .setTitle("Create a new subject")
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -39,21 +37,12 @@ public class SubjectDialog extends AppCompatDialogFragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String l_name = editTextSubjectName.getText().toString();
-                        //listener.applyChange(l_name, );
+                        listener.applyChange(l_name);
                     }
                 });
 
         //Initialization
         editTextSubjectName = view.findViewById(R.id.etsettingsSDName);
-        imageViewIcon = view.findViewById(R.id.ivSettingsSDIcon);
-        btChooseIcon = view.findViewById(R.id.btSettingsSDIcon);
-
-        btChooseIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
 
 
         return  builder.create();
@@ -71,6 +60,6 @@ public class SubjectDialog extends AppCompatDialogFragment {
     }
 
     public interface SettingsSubjectDialogListener {
-        void applyChange(String name, Uri icon);
+        void applyChange(String name);
     }
 }

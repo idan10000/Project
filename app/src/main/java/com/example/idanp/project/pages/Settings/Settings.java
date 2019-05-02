@@ -40,7 +40,7 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
     private int classCurrentPosition, gradeCurrentPosition;
     private SharedPreferences sharedPref;
     private SharedPreferences.Editor editor;
-
+    final String userID = sharedPref.getString("userID", "");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +49,6 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
         //Initialisation
         sharedPref = getPreferences(MODE_PRIVATE);
         editor = sharedPref.edit();
-        final String userID = sharedPref.getString("userID", "");
 
         schoolName = findViewById(R.id.etSettingsSchoolName);
         grade = findViewById(R.id.spSettingsGrades);
@@ -152,7 +151,8 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
 
 
     @Override
-    public void applyChange(String name, Uri icon) {
+    public void applyChange(String l_name) {
+        db.collection("users").document(userID).collection("subjects").add(l_name);
     }
 
     public void openDialog() {
