@@ -1,11 +1,14 @@
 package com.example.idanp.project.pages.Settings;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,11 +22,15 @@ import android.widget.Spinner;
 import com.example.idanp.project.R;
 import com.example.idanp.project.pages.Login;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,19 +42,24 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
     private Button switchAccount, addSubject, applyChanges;
     private Spinner grade, classNum;
     private EditText schoolName;
-    private ScrollView subjectsList;
+    private RecyclerView subjectsList;
     private ArrayAdapter<CharSequence> arrAdapterClass, arrAdapterGrade;
+
     private int classCurrentPosition, gradeCurrentPosition;
+    private ArrayList<String> subjectNames = new ArrayList<>();
+
     private SharedPreferences sharedPref;
     private SharedPreferences.Editor editor;
-    final String userID = sharedPref.getString("userID", "");
+
+    private String userID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
         //Initialisation
-        sharedPref = getPreferences(MODE_PRIVATE);
+        sharedPref = getSharedPreferences("storage", MODE_PRIVATE);
         editor = sharedPref.edit();
 
         schoolName = findViewById(R.id.etSettingsSchoolName);
@@ -56,9 +68,11 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
         switchAccount = findViewById(R.id.btSettingsChangeUser);
         addSubject = findViewById(R.id.btSettingsAddSubject);
         applyChanges = findViewById(R.id.btSettingsApplyChanges);
-        subjectsList = findViewById(R.id.svSettingsSubjects);
+        subjectsList = findViewById(R.id.rvSettings);
 
+        userID = sharedPref.getString("userID", "");
         DocumentReference docRef = db.collection("users").document(userID);
+        initSubjectNames();
 
         /**
          * If data already exists in database, it will be displayed in the corresponding containers.
@@ -122,6 +136,43 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
         classNum.setOnItemSelectedListener(this);
         grade.setOnItemSelectedListener(this);
 
+        //Recycle view adapter
+        initRecyclerView();
+
+
+    }
+
+    /**
+     * Inserts all of the subject names from the database
+     */
+    private void initSubjectNames(){
+        db.collection("users").document(userID).collection("subjects").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for (QueryDocumentSnapshot doc : task.getResult()){
+                        subjectNames.add(doc.get("name").toString());
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "initSubjectNames: failure to pull documents");
+                Log.e(TAG, e.getMessage());
+
+            }
+        });
+    }
+
+    /**
+     * Sets the adapter for the recycler view
+     */
+    private void initRecyclerView(){
+        Log.d(TAG, "initRecyclerView: init recyclerview.");
+        SubjectRecycleViewAdapter adapter = new SubjectRecycleViewAdapter(this, subjectNames);
+        subjectsList.setAdapter(adapter);
+        subjectsList.setLayoutManager(new LinearLayoutManager(this));
     }
 
     /**
@@ -152,7 +203,9 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
 
     @Override
     public void applyChange(String l_name) {
-        db.collection("users").document(userID).collection("subjects").add(l_name);
+        Map<String, Object> l_data = new HashMap<>();
+        l_data.put("name", l_name);
+        db.collection("users").document(userID).collection("subjects").document(l_name).set(l_data);
     }
 
     public void openDialog() {

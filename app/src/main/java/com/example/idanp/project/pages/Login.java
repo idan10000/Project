@@ -46,7 +46,7 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         // Initialization
-        sharedPref = getPreferences(MODE_PRIVATE);
+        sharedPref = getSharedPreferences("storage", MODE_PRIVATE);
         editor = sharedPref.edit();
         mAuth = FirebaseAuth.getInstance();
         etEmail = findViewById(R.id.etLoginEmail);
@@ -69,6 +69,7 @@ public class Login extends AppCompatActivity {
                                         // Sign in success, update UI with the signed-in user's information
                                         FirebaseUser user = mAuth.getCurrentUser();
                                         editor.putString("userID", user.getUid());
+                                        editor.commit();
                                         Log.d(TAG, "User logged in");
                                         db.collection("users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                             @Override
@@ -86,7 +87,7 @@ public class Login extends AppCompatActivity {
                                                 }
                                             }
                                         });
-                                        if(isFirstOpen)
+                                        if(false)//if(isFirstOpen)
                                             startActivity(new Intent(activity, HomePage.class));
                                         else {
                                             db.collection("users").document(user.getUid()).update("logged", true);
