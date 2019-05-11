@@ -26,13 +26,17 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 public class Settings extends AppCompatActivity implements AdapterView.OnItemSelectedListener, SubjectDialog.SettingsSubjectDialogListener {
 
@@ -72,8 +76,6 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
 
         userID = sharedPref.getString("userID", "");
         DocumentReference docRef = db.collection("users").document(userID);
-        initSubjectNames();
-
         /**
          * If data already exists in database, it will be displayed in the corresponding containers.
          */
@@ -136,23 +138,35 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
         classNum.setOnItemSelectedListener(this);
         grade.setOnItemSelectedListener(this);
 
-        //Recycle view adapter
-        initRecyclerView();
+        db.collection("users").document(userID).collection("subjects").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                if (e!= null){
+                    Log.w(TAG, "onEvent: Listen failed", e);
+                    return;
+                }
 
+                Log.d(TAG, "onEvent: subject database change detected");
+                initSubjectNames();
+            }
+        });
 
     }
 
     /**
-     * Inserts all of the subject names from the database
+     * Inserts all of the subject names from the database into the {@code subjectNames} and into the recyclerView.
      */
     private void initSubjectNames(){
+        subjectNames.clear();
         db.collection("users").document(userID).collection("subjects").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
                     for (QueryDocumentSnapshot doc : task.getResult()){
+                        Log.d(TAG, "onComplete: added into subjectNames");
                         subjectNames.add(doc.get("name").toString());
                     }
+                    initRecyclerView();
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {

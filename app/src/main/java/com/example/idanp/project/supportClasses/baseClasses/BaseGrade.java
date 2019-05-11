@@ -23,6 +23,10 @@ public abstract class BaseGrade {
         distribution = -1;
     }
 
+    public BaseGrade(){
+
+    }
+
     /**
      * Base constructor, creates a grade with a custom distribution, which will
      * @param name the name of the test

@@ -20,7 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
-public class SubjectRecycleViewAdapter extends RecyclerView.Adapter<SubjectRecycleViewAdapter.ViewHolder> {
+public class SubjectRecycleViewAdapter extends RecyclerView.Adapter<SubjectRecycleViewAdapter.ViewHolder>  {
 
     private static final String TAG = "SubjectRecycleViewAdapter";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -65,7 +65,7 @@ public class SubjectRecycleViewAdapter extends RecyclerView.Adapter<SubjectRecyc
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        Log.d(TAG, subjectNames.get(i) + "was deleted");
+                                        Log.d(TAG,  "deleting from the database");
                                     }
                                 });
                                 break;
@@ -78,7 +78,7 @@ public class SubjectRecycleViewAdapter extends RecyclerView.Adapter<SubjectRecyc
                 };
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                builder.setMessage("Are you sure you want to delete" + subjectNames.get(i) + "?").setPositiveButton("Yes", dialogClickListener)
+                builder.setMessage("Are you sure you want to delete " + subjectNames.get(i) + "?").setPositiveButton("Yes", dialogClickListener)
                         .setNegativeButton("No", dialogClickListener).show();
 
             }

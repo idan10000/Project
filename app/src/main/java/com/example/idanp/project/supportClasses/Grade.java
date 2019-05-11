@@ -21,6 +21,10 @@ public class Grade extends BaseGrade {
         date = new GregorianCalendar(year,month,day);
     }
 
+    public Grade(){
+
+    }
+
     /**
      * Adds a picture both to the testPictures list, as well as to the firebase in the grade section under the
      * id of 'testPictures'

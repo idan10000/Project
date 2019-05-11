@@ -45,4 +45,5 @@
         <item>12</item>
     </string-array>
 
+    <string name="menuGroup">menuGroup</string>
 </resources>
