@@ -3,6 +3,7 @@
     package="com.example.idanp.project">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
         android:allowBackup="true"
@@ -11,11 +12,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".pages.NavigationBar"
+            android:label="@string/title_activity_navigation_bar"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".pages.Register" />
-        <activity android:name=".pages.Settings.Settings" />
+        <activity android:name=".pages.settings.Settings" />
         <activity android:name=".pages.HomePage" />
-        <activity android:name=".pages.SubjectTemplate" />
-        <activity android:name=".pages.GradeTemplate" />
+        <activity android:name=".pages.subject.SubjectTemplate" />
+        <activity android:name=".pages.grade.GradeTemplate" />
         <activity android:name=".pages.Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

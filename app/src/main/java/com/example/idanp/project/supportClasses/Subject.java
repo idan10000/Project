@@ -22,15 +22,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Subject extends BaseSubject {
-    private String key;
+    private static final String TAG = "Subject";
 
-    public Subject(String name, String key) {
+    public Subject(String name) {
         super(name);
-        setGradesFromDB();
+    }
+
+    public Subject(){
+
     }
 
     public void createChart(AnyChartView l_chart){
-        Log.d("CreateChart", "Creating " + name + " chart");
+        Log.d(TAG, "Creating " + name + " chart");
         Cartesian l_cartesian = AnyChart.line();
 
         l_cartesian.animation(true);
@@ -79,15 +82,20 @@ public class Subject extends BaseSubject {
         }
     }
 
-    /**
-     * Retrieves from the firebase using the {@link DatabaseHandler} the grades at the {@link #key}.
-     * Inserts the values into the field {@link #grades }.
-     */
-    private void setGradesFromDB(){
-        Log.d("DB retrieve", "Pulling grades from DB at: "+ key + "/grades");
-        List<BaseGrade> l_grades = DatabaseHandler.readFromDatabase(key + "/grades");
-        for(BaseGrade g : l_grades)
-            grades.add(g);
+    public ArrayList<String> getGradesString(){
+        ArrayList<String> list = new ArrayList<>();
+        for(BaseGrade grade : grades){
+            list.add(grade.getGrade() + "");
+        }
+        return list;
+    }
+
+    public ArrayList<String> getDistrebutionsString(){
+        ArrayList<String> list = new ArrayList<>();
+        for(BaseGrade grade : grades){
+            list.add(grade.getDistribution() + "");
+        }
+        return list;
     }
 
 }

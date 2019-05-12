@@ -5,11 +5,15 @@ import java.util.List;
 
 public abstract class BaseSubject {
     protected String name;
-    protected List<BaseGrade> grades;
+    protected ArrayList<BaseGrade> grades;
 
     public BaseSubject(String name){
         this.name = name;
         grades = new ArrayList<>() ;
+    }
+
+    public BaseSubject(){
+
     }
     public String getName() {
         return name;
@@ -20,17 +24,17 @@ public abstract class BaseSubject {
     }
 
     /**
-     * @return a list of {@link BaseGrade} of all the grades in the subject.
+     * @return an arrayList of {@link BaseGrade} of all the grades in the subject.
      */
-    public List<BaseGrade> getGradesObject() {
+    public ArrayList<BaseGrade> getGradesObject() {
         return grades;
     }
 
     /**
      * @return A list with the int values of the grades
      */
-    public List<Integer> getGrades() {
-        List<Integer> list = new ArrayList<>();
+    public ArrayList<Integer> getGrades() {
+        ArrayList<Integer> list = new ArrayList<>();
         for(BaseGrade grade : grades){
             list.add(grade.grade);
         }

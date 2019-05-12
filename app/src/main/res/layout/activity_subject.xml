@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".pages.SubjectTemplate">
+    tools:context=".pages.subject.SubjectTemplate">
 
     <TextView
         android:id="@+id/tvSubjectName"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.anychart.AnyChartView
-        android:id="@+id/any_chart_view"
+        android:id="@+id/acvSubject"
         android:layout_width="0dp"
         android:layout_height="276dp"
         android:layout_marginTop="8dp"
@@ -27,6 +27,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tvSubjectName" />
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvSubject"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
@@ -34,7 +35,7 @@
         app:layout_constraintBottom_toTopOf="@+id/btSubjectAddGrade"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/any_chart_view">
+        app:layout_constraintTop_toBottomOf="@+id/acvSubject">
 
     </android.support.v7.widget.RecyclerView>
 

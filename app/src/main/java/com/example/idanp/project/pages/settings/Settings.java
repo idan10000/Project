@@ -1,9 +1,7 @@
-package com.example.idanp.project.pages.Settings;
+package com.example.idanp.project.pages.settings;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,7 +13,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ScrollView;
 import android.widget.Spinner;
 
 
@@ -38,7 +35,7 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-public class Settings extends AppCompatActivity implements AdapterView.OnItemSelectedListener, SubjectDialog.SettingsSubjectDialogListener {
+public class Settings extends AppCompatActivity implements AdapterView.OnItemSelectedListener, NewSubjectDialog.SettingsSubjectDialogListener {
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static final String TAG = "Settings";
@@ -141,7 +138,7 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
         db.collection("users").document(userID).collection("subjects").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                if (e!= null){
+                if (e != null){
                     Log.w(TAG, "onEvent: Listen failed", e);
                     return;
                 }
@@ -184,7 +181,7 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
      */
     private void initRecyclerView(){
         Log.d(TAG, "initRecyclerView: init recyclerview.");
-        SubjectRecycleViewAdapter adapter = new SubjectRecycleViewAdapter(this, subjectNames);
+        SubjectRecyclerViewAdapter adapter = new SubjectRecyclerViewAdapter(this, subjectNames);
         subjectsList.setAdapter(adapter);
         subjectsList.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -223,8 +220,8 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
     }
 
     public void openDialog() {
-        SubjectDialog subjectDialog = new SubjectDialog();
-        subjectDialog.show(getSupportFragmentManager(), "Create a new subject");
+        NewSubjectDialog newSubjectDialog = new NewSubjectDialog();
+        newSubjectDialog.show(getSupportFragmentManager(), "Create a new subject");
     }
 }
 

@@ -1,6 +1,5 @@
-package com.example.idanp.project.pages.Settings;
+package com.example.idanp.project.pages.settings;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,9 +19,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
-public class SubjectRecycleViewAdapter extends RecyclerView.Adapter<SubjectRecycleViewAdapter.ViewHolder>  {
+public class SubjectRecyclerViewAdapter extends RecyclerView.Adapter<SubjectRecyclerViewAdapter.ViewHolder>  {
 
-    private static final String TAG = "SubjectRecycleViewAdapter";
+    private static final String TAG = "SubjectRecyclerViewAdapter";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private SharedPreferences sharedPref;
 
@@ -32,7 +31,7 @@ public class SubjectRecycleViewAdapter extends RecyclerView.Adapter<SubjectRecyc
     private ArrayList<String> subjectNames;
     private Context context;
 
-    public SubjectRecycleViewAdapter(Context context, ArrayList<String> subjectNames) {
+    public SubjectRecyclerViewAdapter(Context context, ArrayList<String> subjectNames) {
         this.subjectNames = subjectNames;
         this.context = context;
         sharedPref = context.getSharedPreferences("storage", context.MODE_PRIVATE);

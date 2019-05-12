@@ -10,14 +10,14 @@ import java.util.List;
 
 public class Grade extends BaseGrade {
 
-    private String id;
-    private List<Uri> testPictures;
+    private Uri[] testPictures;
     private GregorianCalendar date;
+    private String id;
 
-    public Grade(String name, int grade, String id, int year, int month, int day) {
+    public Grade(String name, int grade, String id, int year, int month, int day, Uri[] testPictures) {
         super(name, grade);
+        this.testPictures = testPictures;
         this.id = id;
-        testPictures = new ArrayList<>();
         date = new GregorianCalendar(year,month,day);
     }
 
@@ -25,22 +25,12 @@ public class Grade extends BaseGrade {
 
     }
 
-    /**
-     * Adds a picture both to the testPictures list, as well as to the firebase in the grade section under the
-     * id of 'testPictures'
-     * @param picture the URI of the picture that is being added to the Grade
-     */
-    public void addPicture(Uri picture){
-        testPictures.add(picture);
-        DatabaseHandler.writeToDatabase(id + "/testPictures", picture);
+    public Uri[] getTestPictures() {
+        return testPictures;
     }
 
-
-    public void deletePicture(Uri picture){
-        if(testPictures.remove(picture))
-            DatabaseHandler.writeToDatabase(id + "/testPictures", testPictures);
-        else
-            throw new NullPointerException();
+    public String getId() {
+        return id;
     }
 
     public GregorianCalendar getDate(){

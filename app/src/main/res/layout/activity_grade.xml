@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".pages.GradeTemplate">
+    tools:context=".pages.grade.GradeTemplate">
 
     <TextView
         android:id="@+id/tvGradeDate"
@@ -13,19 +13,22 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"
         android:text="Date:"
+        android:textColor="@android:color/black"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvGradeDistributionText" />
 
     <EditText
         android:id="@+id/etGradeDate"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:ems="10"
         android:inputType="date"
         android:singleLine="false"
         app:layout_constraintBaseline_toBaselineOf="@+id/tvGradeDate"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvGradeDistributionText" />
 
     <EditText
@@ -45,20 +48,23 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
         android:text="Grade:"
+        android:textColor="@android:color/black"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etGradeTestName" />
 
     <EditText
         android:id="@+id/etGradeGrade"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="0-100"
         android:inputType="number"
         android:singleLine="true"
         app:layout_constraintBaseline_toBaselineOf="@+id/tvGradeGradeText"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvGradeDistributionText" />
 
     <TextView
@@ -68,20 +74,23 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"
         android:text="Distribution:"
+        android:textColor="@android:color/black"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvGradeGradeText" />
 
     <EditText
         android:id="@+id/etGradeDistribution"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
+        android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="@string/distribution_hint"
         android:inputType="number"
         android:singleLine="true"
         app:layout_constraintBaseline_toBaselineOf="@+id/tvGradeDistributionText"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvGradeDistributionText" />
 
     <TextView
@@ -95,41 +104,49 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etGradeDate" />
 
-    <HorizontalScrollView
-        android:id="@+id/svhTestPictures"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/btGradeAddPicture"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvGradeDateWarning">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="vertical" />
-    </HorizontalScrollView>
-
-    <Button
-        android:id="@+id/btGradeAddPicture"
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Add Picture"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
     <Button
         android:id="@+id/btGradeConfirm"
         android:layout_width="wrap_content"
-        android:layout_height="35dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
         android:text="Confirm Changes"
-        app:layout_constraintBaseline_toBaselineOf="@+id/btGradeAddPicture"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/abtGradeAddPicture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_add_a_photo_black_24dp" />
+
+    <ProgressBar
+        android:id="@+id/pbGrade"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/rvGradePictures"
+        app:layout_constraintEnd_toEndOf="@+id/rvGradePictures"
+        app:layout_constraintStart_toStartOf="@+id/rvGradePictures"
+        app:layout_constraintTop_toTopOf="@+id/rvGradePictures" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvGradePictures"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/abtGradeAddPicture"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvGradeDateWarning" />
 
 </android.support.constraint.ConstraintLayout>
