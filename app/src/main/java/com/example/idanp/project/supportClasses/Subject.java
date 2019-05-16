@@ -98,4 +98,17 @@ public class Subject extends BaseSubject {
         return list;
     }
 
+    public double getAverage(){
+        int sum = 0, defaultGrades = 0;
+        for(BaseGrade grade : grades){
+            if(grade.isDefaultDistribution()){
+                defaultGrades += grade.getGrade();
+            }
+            else
+                sum += grade.getGrade() * grade.getDistribution() * 0.01;
+        }
+        sum += defaultGrades * getDefaultDistribution();
+        return sum / grades.size();
+    }
+
 }

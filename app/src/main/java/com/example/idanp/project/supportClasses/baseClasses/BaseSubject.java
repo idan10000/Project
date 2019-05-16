@@ -48,4 +48,15 @@ public abstract class BaseSubject {
     public void addGrade(BaseGrade grade) {
         grades.add(grade);
     }
+
+    public int getDefaultDistribution(){
+        int totalDistribution = 0, defaultDistributionNum = 0;
+        for(BaseGrade grade : grades){
+            if(!grade.isDefaultDistribution())
+                totalDistribution += grade.getDistribution();
+            else
+                defaultDistributionNum++;
+        }
+        return  (100 - totalDistribution) / defaultDistributionNum;
+    }
 }

@@ -34,7 +34,7 @@ public class SubjectTemplate extends AppCompatActivity {
     private SharedPreferences sharedPref;
 
     private RecyclerView gradeList;
-    private TextView name;
+    private TextView name, average;
     private Button addGrade;
     private AnyChartView chartView;
 
@@ -51,8 +51,9 @@ public class SubjectTemplate extends AppCompatActivity {
 
         gradeList = findViewById(R.id.rvSubject);
         name = findViewById(R.id.tvSubjectName);
+        average = findViewById(R.id.tvSubjectAverage);
         addGrade = findViewById(R.id.btSubjectAddGrade);
-        chartView = findViewById(R.id.acvSubject);
+        chartView = findViewById(R.id.acvSubjectGraph);
 
         Intent intent = getIntent();
         strName = intent.getStringExtra("name");
@@ -64,6 +65,7 @@ public class SubjectTemplate extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
                     subject = task.getResult().toObject(Subject.class);
+                    average.setText(subject.getAverage() + "");
                     grades = subject.getGradesObject();
                     initRecyclerView();
                     subject.createChart(chartView);

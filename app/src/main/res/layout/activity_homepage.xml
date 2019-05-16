@@ -7,11 +7,59 @@
     tools:context=".pages.HomePage">
 
     <com.anychart.AnyChartView
-        android:id="@+id/acvSubject"
+        android:id="@+id/acvHomeGraph"
         android:layout_width="0dp"
-        android:layout_height="230dp"
+        android:layout_height="400dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvHomeRecentGradeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/latest_grade"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tvHomeHighestSubjectAvgText"
+        app:layout_constraintTop_toBottomOf="@+id/tvHomeHighestSubjectAvgText" />
+
+    <TextView
+        android:id="@+id/tvHomeAvgText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Overall Average:"
+        app:layout_constraintBottom_toTopOf="@+id/tvHomeBestSubjectText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/space" />
+
+    <TextView
+        android:id="@+id/tvHomeBestSubjectText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Best Subject:"
+        app:layout_constraintBottom_toTopOf="@+id/tvHomeHighestSubjectAvgText"
+        app:layout_constraintStart_toStartOf="@+id/tvHomeAvgText"
+        app:layout_constraintTop_toBottomOf="@+id/tvHomeAvgText" />
+
+    <TextView
+        android:id="@+id/tvHomeHighestSubjectAvgText"
+        android:layout_width="103dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Highest Subject Average:"
+        app:layout_constraintBottom_toTopOf="@+id/tvHomeRecentGradeText"
+        app:layout_constraintStart_toStartOf="@+id/tvHomeBestSubjectText"
+        app:layout_constraintTop_toBottomOf="@+id/tvHomeBestSubjectText" />
+
+    <Space
+        android:id="@+id/space"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="408dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -19,9 +67,36 @@
         android:id="@+id/tvHomeAvg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="32dp"
         android:text="Average"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="246dp" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/tvHomeAvgText"
+        app:layout_constraintStart_toEndOf="@+id/tvHomeAvgText" />
+
+    <TextView
+        android:id="@+id/tvHomeBestSubject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:text="best subject name"
+        app:layout_constraintBaseline_toBaselineOf="@+id/tvHomeBestSubjectText"
+        app:layout_constraintStart_toEndOf="@+id/tvHomeBestSubjectText" />
+
+    <TextView
+        android:id="@+id/tvHomeHighestSubjectAvg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:text="Highest subject avg"
+        app:layout_constraintBaseline_toBaselineOf="@+id/tvHomeHighestSubjectAvgText"
+        app:layout_constraintStart_toEndOf="@+id/tvHomeHighestSubjectAvgText" />
+
+    <TextView
+        android:id="@+id/tvHomeRecentGrade"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:text="Recent grade"
+        app:layout_constraintBaseline_toBaselineOf="@+id/tvHomeRecentGradeText"
+        app:layout_constraintStart_toEndOf="@+id/tvHomeRecentGradeText" />
 
 </android.support.constraint.ConstraintLayout>

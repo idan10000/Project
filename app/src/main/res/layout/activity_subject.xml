@@ -18,9 +18,9 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.anychart.AnyChartView
-        android:id="@+id/acvSubject"
+        android:id="@+id/acvSubjectGraph"
         android:layout_width="0dp"
-        android:layout_height="276dp"
+        android:layout_height="300dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,7 +35,7 @@
         app:layout_constraintBottom_toTopOf="@+id/btSubjectAddGrade"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/acvSubject">
+        app:layout_constraintTop_toBottomOf="@+id/acvSubjectGraph">
 
     </android.support.v7.widget.RecyclerView>
 
@@ -48,5 +48,27 @@
         android:text="Add Grade"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tvSubjectAverage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Number"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textView3"
+        app:layout_constraintStart_toEndOf="@+id/textView3" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Average:"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/btSubjectAddGrade"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
