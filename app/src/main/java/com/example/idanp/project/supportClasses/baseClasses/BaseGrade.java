@@ -60,10 +60,10 @@ public abstract class BaseGrade {
      * @throws OutOfGradeRangeException an exception that indicates that the grade inserted is out of the allowed range.
      */
     public void setGrade(int grade) throws OutOfGradeRangeException {
-        if(grade < 100 && grade > 0)
+        if(grade <= 100 && grade >= 0)
         this.grade = grade;
         else
-            throw new OutOfGradeRangeException("The GradeTemplate " + grade + "is not int the allowed range of 0-100");
+            throw new OutOfGradeRangeException("The GradeTemplate " + grade + "is not in the allowed range of 0-100");
     }
 
     public int getDistribution() {
@@ -80,7 +80,7 @@ public abstract class BaseGrade {
         if(distribution >= -1 && distribution <=100)
             this.distribution = distribution;
         else
-            throw new OutOfDistributionRangeException("The distribution " + distribution + "is not int the allowed range");
+            throw new OutOfDistributionRangeException("The distribution " + distribution + "is not in the allowed range");
     }
 
 

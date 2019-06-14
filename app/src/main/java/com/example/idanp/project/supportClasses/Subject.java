@@ -27,6 +27,10 @@ public class Subject extends BaseSubject {
     public Subject(String name) {
         super(name);
     }
+    public Subject(String name, List<Grade> grades){
+        super(name, grades);
+    }
+
 
     public Subject(){
 
@@ -48,17 +52,17 @@ public class Subject extends BaseSubject {
 
         l_cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
 
-        l_cartesian.title("Grades of " + name);
-
-        l_cartesian.yAxis(0).title("Grade");
+        //l_cartesian.yAxis(0).title("Grade");
         l_cartesian.xAxis(0).labels().padding(5d, 5d, 5d, 5d);
 
-        List<ValueDataEntry> l_seriesData = new ArrayList<>();
+        List<DataEntry> l_seriesData = new ArrayList<>();
         createDataEntryList(l_seriesData);
+
         Set l_set = Set.instantiate();
+        l_set.data(l_seriesData);
         Mapping l_mapping = l_set.mapAs("{ x: 'x', value: 'value' }");
         Line l_series = l_cartesian.line(l_mapping);
-        l_series.name(name);
+        l_series.name("Grades");
         l_series.hovered().markers().enabled(true);
         l_series.hovered().markers()
                 .type(MarkerType.CIRCLE)
@@ -68,17 +72,15 @@ public class Subject extends BaseSubject {
                 .anchor(Anchor.LEFT_CENTER)
                 .offsetX(5d)
                 .offsetY(5d);
-        l_cartesian.legend().enabled(true);
-        l_cartesian.legend().fontSize(13d);
-        l_cartesian.legend().padding(0d, 0d, 10d, 0d);
-
         l_chart.setChart(l_cartesian);
 
     }
 
-    private void createDataEntryList(List<ValueDataEntry> l_seriesData){
-        for(BaseGrade g : grades){
-            l_seriesData.add(new ValueDataEntry(((Grade) g).getDate().toString(), g.getGrade()));
+    private void createDataEntryList(List<DataEntry> l_seriesData){
+        if(grades != null) {
+            for (BaseGrade g : grades) {
+                l_seriesData.add(new ValueDataEntry(((Grade) g).getDate().toString(), g.getGrade()));
+            }
         }
     }
 
@@ -99,16 +101,21 @@ public class Subject extends BaseSubject {
     }
 
     public double getAverage(){
-        int sum = 0, defaultGrades = 0;
-        for(BaseGrade grade : grades){
-            if(grade.isDefaultDistribution()){
-                defaultGrades += grade.getGrade();
+        if(grades != null) {
+            int sum = 0, defaultGrades = 0;
+            for (BaseGrade grade : grades) {
+                if (grade.isDefaultDistribution()) {
+                    defaultGrades += grade.getGrade();
+                } else
+                    sum += grade.getGrade() * (grade.getDistribution() * 0.01);
             }
-            else
-                sum += grade.getGrade() * grade.getDistribution() * 0.01;
+            sum += defaultGrades * getDefaultDistribution();
+            if(grades.size() != 0)
+                return sum / grades.size();
+            else return 0;
         }
-        sum += defaultGrades * getDefaultDistribution();
-        return sum / grades.size();
+        else
+            return 0;
     }
 
 }

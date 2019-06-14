@@ -1,39 +1,35 @@
 package com.example.idanp.project.supportClasses;
 
-import android.net.Uri;
-
 import com.example.idanp.project.supportClasses.baseClasses.BaseGrade;
 
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.List;
 
 public class Grade extends BaseGrade {
 
-    private Uri[] testPictures;
-    private GregorianCalendar date;
+    private ArrayList<String> pictures;
+    private Date date;
     private String id;
 
-    public Grade(String name, int grade, String id, int year, int month, int day, Uri[] testPictures) {
+    public Grade(String name, int grade, String id, int year, int month, int day, int distribution, ArrayList<String> pictures) {
         super(name, grade);
-        this.testPictures = testPictures;
+        this.pictures = pictures;
         this.id = id;
-        date = new GregorianCalendar(year,month,day);
+        date = new Date(year,month,day);
     }
 
     public Grade(){
 
     }
 
-    public Uri[] getTestPictures() {
-        return testPictures;
+    public ArrayList<String> getPictures() {
+        return pictures;
     }
 
     public String getId() {
         return id;
     }
 
-    public GregorianCalendar getDate(){
+    public Date getDate(){
         return  date;
     }
 

@@ -1,114 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".pages.settings.Settings">
 
-    <Button
-        android:id="@+id/btSettingsChangeUser"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="Switch Account"
-        android:textSize="10sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvSettings"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/btSettingsApplyChanges"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSettingsSubjectsTitle" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/btSettingsAddSubject"
+        <include layout="@layout/toolbar_layout" />
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            tools:context=".pages.settings.Settings">
+
+            <Button
+                android:id="@+id/btSettingsChangeUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="Switch Account"
+                android:textSize="10sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvSettings"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/btSettingsApplyChanges"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvSettingsSubjectsTitle" />
+
+            <Button
+                android:id="@+id/btSettingsAddSubject"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="Add Subject"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <Button
+                android:id="@+id/btSettingsApplyChanges"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Apply Changes"
+                app:layout_constraintBaseline_toBaselineOf="@+id/btSettingsAddSubject"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/tvSettingsGradeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Grade"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintRight_toLeftOf="@+id/spSettingsGrades"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Spinner
+                android:id="@+id/spSettingsGrades"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                app:layout_constraintStart_toEndOf="@+id/tvSettingsGradeText"
+                app:layout_constraintTop_toTopOf="@+id/tvSettingsGradeText" />
+
+            <Spinner
+                android:id="@+id/spSettingsClasses"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                app:layout_constraintStart_toEndOf="@+id/tvSettingsClassText"
+                app:layout_constraintTop_toTopOf="@+id/tvSettingsClassText" />
+
+            <TextView
+                android:id="@+id/tvSettingsClassText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Class"
+                app:layout_constraintBaseline_toBaselineOf="@+id/tvSettingsGradeText"
+                app:layout_constraintStart_toEndOf="@+id/spSettingsGrades" />
+
+            <EditText
+                android:id="@+id/etSettingsSchoolName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:ems="10"
+                android:hint="School Name"
+                android:inputType="textPersonName"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toStartOf="@+id/btSettingsChangeUser"
+                app:layout_constraintStart_toStartOf="@+id/tvSettingsGradeText"
+                app:layout_constraintTop_toBottomOf="@+id/tvSettingsGradeText" />
+
+            <TextView
+                android:id="@+id/tvSettingsSubjectsTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Subjects:"
+                android:textSize="24sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/etSettingsSchoolName" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </LinearLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Add Subject"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:menu="@menu/activity_navigation_bar_drawer" />
 
-    <Button
-        android:id="@+id/btSettingsApplyChanges"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="Apply Changes"
-        app:layout_constraintBaseline_toBaselineOf="@+id/btSettingsAddSubject"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/tvSettingsGradeText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Grade"
-        app:layout_constraintHorizontal_chainStyle="spread_inside"
-        app:layout_constraintRight_toLeftOf="@+id/spSettingsGrades"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Spinner
-        android:id="@+id/spSettingsGrades"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        app:layout_constraintStart_toEndOf="@+id/tvSettingsGradeText"
-        app:layout_constraintTop_toTopOf="@+id/tvSettingsGradeText" />
-
-    <Spinner
-        android:id="@+id/spSettingsClasses"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        app:layout_constraintStart_toEndOf="@+id/tvSettingsClassText"
-        app:layout_constraintTop_toTopOf="@+id/tvSettingsClassText" />
-
-    <TextView
-        android:id="@+id/tvSettingsClassText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="Class"
-        app:layout_constraintBaseline_toBaselineOf="@+id/tvSettingsGradeText"
-        app:layout_constraintStart_toEndOf="@+id/spSettingsGrades" />
-
-    <EditText
-        android:id="@+id/etSettingsSchoolName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:hint="School Name"
-        android:inputType="textPersonName"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toStartOf="@+id/btSettingsChangeUser"
-        app:layout_constraintStart_toStartOf="@+id/tvSettingsGradeText"
-        app:layout_constraintTop_toBottomOf="@+id/tvSettingsGradeText" />
-
-    <TextView
-        android:id="@+id/tvSettingsSubjectsTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Subjects:"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etSettingsSchoolName" />
-
-</android.support.constraint.ConstraintLayout>
+</android.support.v4.widget.DrawerLayout>

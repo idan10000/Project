@@ -21,7 +21,7 @@ public class NewSubjectDialog extends AppCompatDialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.settings_subject_dialog,null);
+        View view = inflater.inflate(R.layout.settings_subject_dialog, null);
         builder.setView(view)
                 .setTitle("Create a new subject")
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
@@ -34,6 +34,7 @@ public class NewSubjectDialog extends AppCompatDialogFragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String l_name = editTextSubjectName.getText().toString();
+                        l_name = capitalizeFirstLetter(l_name);
                         listener.applyChange(l_name);
                     }
                 });
@@ -42,7 +43,7 @@ public class NewSubjectDialog extends AppCompatDialogFragment {
         editTextSubjectName = view.findViewById(R.id.etsettingsSDName);
 
 
-        return  builder.create();
+        return builder.create();
     }
 
     @Override
@@ -58,5 +59,13 @@ public class NewSubjectDialog extends AppCompatDialogFragment {
 
     public interface SettingsSubjectDialogListener {
         void applyChange(String name);
+    }
+
+    private String capitalizeFirstLetter(String original) {
+        if (original == null || original.length() == 0) {
+            return original;
+        }
+        return original.substring(0, 1).toUpperCase() + original.substring(1);
+
     }
 }

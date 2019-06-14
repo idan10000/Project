@@ -3,8 +3,6 @@ package com.example.idanp.project.pages.grade;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,6 +20,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
+
 
 public class PictureRecyclerViewAdapter extends RecyclerView.Adapter<PictureRecyclerViewAdapter.ViewHolder> {
 
@@ -29,10 +29,10 @@ public class PictureRecyclerViewAdapter extends RecyclerView.Adapter<PictureRecy
 
     private DocumentReference dbReference;
     private StorageReference storageReference;
-    private Uri[] imageUrls;
+    private ArrayList<String> imageUrls;
     private Context context;
 
-    public PictureRecyclerViewAdapter(Context context, Uri[] imageUrls, DocumentReference dbReference, StorageReference storageReference) {
+    public PictureRecyclerViewAdapter(Context context, ArrayList<String> imageUrls, DocumentReference dbReference, StorageReference storageReference) {
         this.imageUrls = imageUrls;
         this.context = context;
         this.dbReference = dbReference;
@@ -51,7 +51,7 @@ public class PictureRecyclerViewAdapter extends RecyclerView.Adapter<PictureRecy
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         Log.d(TAG, "onBindViewHolder: called.");
 
-        final Uri curImage = imageUrls[i];
+        final String curImage = imageUrls.get(i);
         Glide.with(context)
                 .asBitmap()
                 .load(curImage)
@@ -65,14 +65,14 @@ public class PictureRecyclerViewAdapter extends RecyclerView.Adapter<PictureRecy
                         Log.d(TAG, "Subject delete dialog clicked on");
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
-                                dbReference.update("images",FieldValue.arrayRemove(curImage.toString())).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                dbReference.update("images",FieldValue.arrayRemove(curImage)).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         Log.d(TAG, "deleting from the database");
                                         Toast.makeText(context, "Picture successfully deleted", Toast.LENGTH_SHORT).show();
                                     }
                                 });
-                                storageReference.child(curImage.getLastPathSegment()+".jpg").delete();
+                                storageReference.child(curImage).delete();
                                 break;
 
                             case DialogInterface.BUTTON_NEGATIVE:
@@ -94,7 +94,10 @@ public class PictureRecyclerViewAdapter extends RecyclerView.Adapter<PictureRecy
 
     @Override
     public int getItemCount() {
-        return imageUrls.length;
+        if(imageUrls!=null)
+            return imageUrls.size();
+        else
+            return 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

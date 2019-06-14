@@ -3,10 +3,10 @@ package com.example.idanp.project.pages.settings;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -14,10 +14,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 
 import com.example.idanp.project.R;
 import com.example.idanp.project.pages.Login;
+import com.example.idanp.project.supportClasses.BaseActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -35,11 +37,12 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-public class Settings extends AppCompatActivity implements AdapterView.OnItemSelectedListener, NewSubjectDialog.SettingsSubjectDialogListener {
+public class Settings extends BaseActivity implements AdapterView.OnItemSelectedListener, NewSubjectDialog.SettingsSubjectDialogListener {
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static final String TAG = "Settings";
 
+    private Toolbar toolbar;
     private Button switchAccount, addSubject, applyChanges;
     private Spinner grade, classNum;
     private EditText schoolName;
@@ -58,11 +61,13 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        super.onCreateDrawer();
 
         //Initialisation
         sharedPref = getSharedPreferences("storage", MODE_PRIVATE);
         editor = sharedPref.edit();
-
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         schoolName = findViewById(R.id.etSettingsSchoolName);
         grade = findViewById(R.id.spSettingsGrades);
         classNum = findViewById(R.id.spSettingsClasses);
@@ -70,6 +75,7 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
         addSubject = findViewById(R.id.btSettingsAddSubject);
         applyChanges = findViewById(R.id.btSettingsApplyChanges);
         subjectsList = findViewById(R.id.rvSettings);
+        changeTitle("Settings");
 
         userID = sharedPref.getString("userID", "");
         DocumentReference docRef = db.collection("users").document(userID);
@@ -216,7 +222,15 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
     public void applyChange(String l_name) {
         Map<String, Object> l_data = new HashMap<>();
         l_data.put("name", l_name);
-        db.collection("users").document(userID).collection("subjects").document(l_name).set(l_data);
+        String l_AllNames = sharedPref.getString("subjectNames","");
+        if(!l_AllNames.contains(l_name)) {
+            l_AllNames += l_name + ",";
+            editor.putString("subjectNames", l_AllNames);
+            editor.commit();
+            addSubjectToMenuEnd(l_name);
+            db.collection("users").document(userID).collection("subjects").document(l_name).set(l_data);
+        }
+        else Toast.makeText(this, "Subject already exists", Toast.LENGTH_SHORT).show();
     }
 
     public void openDialog() {

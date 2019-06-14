@@ -1,74 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".pages.subject.SubjectTemplate">
 
-    <TextView
-        android:id="@+id/tvSubjectName"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical">
+
+        <include layout="@layout/toolbar_layout" />
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true">
+
+            <com.anychart.AnyChartView
+                android:id="@+id/acvSubjectGraph"
+                android:layout_width="0dp"
+                android:layout_height="300dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvSubject"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/btSubjectAddGrade"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/acvSubjectGraph">
+
+            </android.support.v7.widget.RecyclerView>
+
+            <Button
+                android:id="@+id/btSubjectAddGrade"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="Add Test"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/tvSubjectAverage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Number"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView3"
+                app:layout_constraintStart_toEndOf="@+id/textView3" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Average:"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                app:layout_constraintBaseline_toBaselineOf="@+id/btSubjectAddGrade"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </LinearLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Subject Name"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:menu="@menu/activity_navigation_bar_drawer" />
 
-    <com.anychart.AnyChartView
-        android:id="@+id/acvSubjectGraph"
-        android:layout_width="0dp"
-        android:layout_height="300dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSubjectName" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvSubject"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/btSubjectAddGrade"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/acvSubjectGraph">
-
-    </android.support.v7.widget.RecyclerView>
-
-    <Button
-        android:id="@+id/btSubjectAddGrade"
-        android:layout_width="wrap_content"
-        android:layout_height="42dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Add Grade"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-        android:id="@+id/tvSubjectAverage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="Number"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textView3"
-        app:layout_constraintStart_toEndOf="@+id/textView3" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="Average:"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/btSubjectAddGrade"
-        app:layout_constraintStart_toStartOf="parent" />
-
-</android.support.constraint.ConstraintLayout>
+</android.support.v4.widget.DrawerLayout>

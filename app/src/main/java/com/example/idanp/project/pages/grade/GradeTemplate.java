@@ -4,12 +4,12 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,16 +19,18 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.example.idanp.project.R;
 import com.example.idanp.project.pages.subject.SubjectTemplate;
+import com.example.idanp.project.supportClasses.BaseActivity;
+import com.example.idanp.project.supportClasses.Date;
 import com.example.idanp.project.supportClasses.Grade;
 import com.example.idanp.project.supportClasses.baseClasses.BaseGrade;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -37,16 +39,17 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class GradeTemplate extends AppCompatActivity {
+public class GradeTemplate extends BaseActivity {
 
     private static final String TAG = "GradeTemplate";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -69,14 +72,16 @@ public class GradeTemplate extends AppCompatActivity {
     private String userID, subjectName, gradeName;
     private Grade gradeObject;
     private int day, month, year;
-    private  Uri[] picturesURLs;
+    private ArrayList<String> picturesURLs;
+    private Date storageDate;
 
-    private final Intent data = getIntent();
+    private Intent data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grade);
+        super.onCreateDrawer();
 
         name = findViewById(R.id.etGradeTestName);
         grade = findViewById(R.id.etGradeGrade);
@@ -87,14 +92,15 @@ public class GradeTemplate extends AppCompatActivity {
         progressBar = findViewById(R.id.pbGrade);
         pictures = findViewById(R.id.rvGradePictures);
 
+        sharedPref = getSharedPreferences("storage",MODE_PRIVATE);
         userID = sharedPref.getString("userID", "");
 
+        data = getIntent();
         if (data.getStringExtra("subjectName") != null)
             subjectName = data.getStringExtra("subjectName");
         else
             subjectName = "default";
 
-        //Retrieving doc path from database, stopping all other functions until complete
         if (data.getStringExtra("gradeID") != null) {
             docReference = db.collection("users").document(userID).collection("subjects").document(subjectName)
                     .collection("grades").document(data.getStringExtra("gradeID"));
@@ -111,7 +117,9 @@ public class GradeTemplate extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, CAMERA_REQUEST_CODE);
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(intent, CAMERA_REQUEST_CODE);
+                }
             }
         });
 
@@ -130,6 +138,8 @@ public class GradeTemplate extends AppCompatActivity {
                 day = dayOfMonth;
                 month = monthOfYear;
                 year = theYear;
+
+                storageDate = new Date(theYear,monthOfYear,dayOfMonth);
 
                 String myFormat = "dd/MM/yyyy";
                 SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
@@ -158,7 +168,7 @@ public class GradeTemplate extends AppCompatActivity {
                 int l_grade;
                 int l_distribution;
 
-                if(grade.getText().toString() != "") {
+                if(grade.getText().length() > 0) {
                     l_grade = Integer.parseInt(grade.getText().toString());
 
                     if (l_grade < 0 || l_grade > 100) {
@@ -170,7 +180,7 @@ public class GradeTemplate extends AppCompatActivity {
                     Toast.makeText(context, "Please enter a grade...", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (distribution.getText().toString() != "") {
+                if (distribution.length() != 0) {
                     l_distribution = Integer.parseInt(distribution.getText().toString());
                 }
                 else l_distribution = -1;
@@ -180,7 +190,7 @@ public class GradeTemplate extends AppCompatActivity {
                     return;
                 }
 
-                gradeObject = new Grade(name.getText().toString(), l_grade, docReference.getId(), year, month, day, picturesURLs);
+                gradeObject = new Grade(name.getText().toString(), l_grade, docReference.getId(), year, month, day, Integer.parseInt(distribution.getText().toString()), picturesURLs);
 
                 try {
                     gradeObject.setDistribution(l_distribution);
@@ -193,6 +203,7 @@ public class GradeTemplate extends AppCompatActivity {
                 docReference.set(gradeObject);
                 Intent intent = new Intent(context, SubjectTemplate.class);
                 intent.putExtra("subjectName", subjectName);
+                startActivity(intent);
             }
         });
 
@@ -203,8 +214,8 @@ public class GradeTemplate extends AppCompatActivity {
                     Log.w(TAG, "onEvent: Listen failed", e);
                     return;
                 }
-                Log.d(TAG, "onEvent: change detected in the db at the " + gradeObject.getName() + " document");
-                initPictures(documentSnapshot);
+                if(gradeObject!=null)
+                    Log.d(TAG, "onEvent: change detected in the db at the " + gradeObject.getName() + " document");
             }
 
         });
@@ -223,11 +234,14 @@ public class GradeTemplate extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     if (task.getResult().contains("name")) {
                         gradeObject = task.getResult().toObject(Grade.class);
+                        picturesURLs = gradeObject.getPictures();
                         name.setText(task.getResult().getString("name"));
-                        double l_distribution = task.getResult().getDouble("distribution");
+                        grade.setText(gradeObject.getGrade() + "");
+                        double l_distribution = gradeObject.getDistribution();
                         if (l_distribution != -1)
                             distribution.setText(l_distribution + "");
-                        date.setText(task.getResult().get("date").toString());
+                        date.setText(gradeObject.getDate().toString());
+                        initPictures();
                     }
                 }
             }
@@ -237,20 +251,23 @@ public class GradeTemplate extends AppCompatActivity {
     /**
      * Inserts all the pictures of the test that are saved in the database into the {@link HorizontalScrollView} {@code pictures}.
      */
-    private void initPictures(final DocumentSnapshot snapshot) {
-
+    private void initPictures() {
         progressBar.setVisibility(View.VISIBLE);
-        picturesURLs = (Uri[]) snapshot.get("pictures");
         StorageReference filepath = storage.child(userID).child(subjectName);
         PictureRecyclerViewAdapter adapter = new PictureRecyclerViewAdapter(context, picturesURLs, docReference, filepath);
         pictures.setAdapter(adapter);
         pictures.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-        Log.d(TAG, "onComplete: Failed to receive images");
-        Toast.makeText(context, "Failed to load images", Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "initPictures: Initialized pictures from db at: " + subjectName);
+        Toast.makeText(context, "loaded images", Toast.LENGTH_SHORT).show();
         progressBar.setVisibility(View.GONE);
-
     }
 
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
 
     /**
      * Checks if an image was captured successfully and then uploads it to fireStorage.
@@ -269,19 +286,38 @@ public class GradeTemplate extends AppCompatActivity {
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
 
             progressBar.setVisibility(View.VISIBLE);
-            Uri uri = data.getData();
 
-            StorageReference filepath = storage.child(userID).child(subjectName).child(uri.getLastPathSegment() + ".jpg");
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+
+            Uri uri = getImageUri(context,imageBitmap);
+
+
+            final StorageReference filepath = storage.child(userID).child(subjectName).child(uri.getLastPathSegment() + ".jpg");
+
             filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Log.d(TAG, "onSuccess: Picture successfully uploaded");
                     Toast.makeText(GradeTemplate.this, "Picture successfully uploaded", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
-                    String downloadURL = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
-                    docReference.update("pictures", FieldValue.arrayUnion(downloadURL));
+
+                    Task<Uri> downloadUri = taskSnapshot.getStorage().getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e(TAG, "onFailure: cry2", e);
+                        }
+                    });
+
+                    if(downloadUri.isSuccessful()){
+                        String generatedFilePath = downloadUri.getResult().toString();
+                        Toast.makeText(context, generatedFilePath, Toast.LENGTH_SHORT).show();
+                        docReference.update("pictures", FieldValue.arrayUnion(generatedFilePath));
+                        picturesURLs.add(generatedFilePath);
+                    }
                 }
             });
+
         }
     }
 }
