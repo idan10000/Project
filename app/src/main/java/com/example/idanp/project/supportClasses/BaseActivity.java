@@ -1,9 +1,11 @@
 package com.example.idanp.project.supportClasses;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
+import android.os.Build;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
@@ -19,6 +21,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.example.idanp.project.R;
 import com.example.idanp.project.pages.HomePage;
+import com.example.idanp.project.pages.reminders.Reminders;
 import com.example.idanp.project.pages.settings.Settings;
 import com.example.idanp.project.pages.subject.SubjectTemplate;
 
@@ -30,6 +33,7 @@ public class BaseActivity extends AppCompatActivity
     private ActionBarDrawerToggle toggle;
 
     protected void onCreateDrawer(){
+        createNotificationChannel();
         //Init subjectNames
         sharedPref = getSharedPreferences("storage", MODE_PRIVATE);
         subjectNames = sharedPref.getString("subjectNames","").split(",");
@@ -66,7 +70,7 @@ public class BaseActivity extends AppCompatActivity
     protected void addSubjectToMenuEnd(String subjectName){
         NavigationView navigationView = findViewById(R.id.nav_view);
         Menu menu = navigationView.getMenu();
-        menu.add(0, menu.size() - 3, menu.size(), menuIconWithText(getDrawable(R.drawable.ic_subject),subjectName));
+        menu.add(0, menu.size() - 4, menu.size(), menuIconWithText(getDrawable(R.drawable.ic_subject),subjectName));
     }
 
     private CharSequence menuIconWithText(Drawable r, String title) {
@@ -91,6 +95,11 @@ public class BaseActivity extends AppCompatActivity
         else if (id == R.id.nav_settings){
             Intent intent = new Intent(this, Settings.class);
             startActivity(intent);
+        }
+        else if(id == R.id.nav_reminders){
+            Intent intent = new Intent(this, Reminders.class);
+            startActivity(intent);
+
         }
         else
         {
@@ -117,4 +126,17 @@ public class BaseActivity extends AppCompatActivity
     public void changeTitle(String title){
         getSupportActionBar().setTitle(title);
     }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Study Reminders";
+            String description = "Reminders to study for upcoming tests";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("ProjectNotifications", name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
 }

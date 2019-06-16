@@ -23,14 +23,19 @@ import java.util.List;
 
 public class Subject extends BaseSubject {
     private static final String TAG = "Subject";
+    private double average;
 
     public Subject(String name) {
         super(name);
     }
+    public Subject(String name, List<Grade> grades, double average){
+        super(name, grades);
+        this.average = average;
+    }
+
     public Subject(String name, List<Grade> grades){
         super(name, grades);
     }
-
 
     public Subject(){
 
@@ -100,18 +105,22 @@ public class Subject extends BaseSubject {
         return list;
     }
 
-    public double getAverage(){
+    public double getAverage() {
+        return average;
+    }
+
+    public double calculateAverage(){
         if(grades != null) {
-            int sum = 0, defaultGrades = 0;
+            double sum = 0, defaultGrades = 0;
             for (BaseGrade grade : grades) {
                 if (grade.isDefaultDistribution()) {
                     defaultGrades += grade.getGrade();
                 } else
                     sum += grade.getGrade() * (grade.getDistribution() * 0.01);
             }
-            sum += defaultGrades * getDefaultDistribution();
+            sum += defaultGrades * getDefaultDistribution() * 0.01;
             if(grades.size() != 0)
-                return sum / grades.size();
+                return sum;
             else return 0;
         }
         else

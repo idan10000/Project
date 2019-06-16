@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.example.idanp.project.R;
 import com.example.idanp.project.pages.grade.GradeTemplate;
 import com.example.idanp.project.supportClasses.Grade;
+import com.example.idanp.project.supportClasses.Subject;
 
 import java.util.ArrayList;
 
@@ -24,13 +25,15 @@ public class GradeRecyclerViewAdapter extends RecyclerView.Adapter<GradeRecycler
 
     private ArrayList<Grade> grades;
     private String subjectName;
+    private Subject subject;
     private Context context;
 
 
-    public GradeRecyclerViewAdapter(Context context, ArrayList<Grade> grades, String subjectName) {
-        this.grades = grades;
+    public GradeRecyclerViewAdapter(Context context, Subject subject) {
         this.context = context;
-        this.subjectName = subjectName;
+        this.subject = subject;
+        this.subjectName = subject.getName();
+        this.grades = subject.getGradesObject();
     }
 
 
@@ -48,7 +51,11 @@ public class GradeRecyclerViewAdapter extends RecyclerView.Adapter<GradeRecycler
 
         viewHolder.grade.setText(grades.get(i).getGrade() + "");
         viewHolder.testName.setText(grades.get(i).getName() + "");
-        viewHolder.distribution.setText(grades.get(i).getDistribution() + "%");
+        if(!grades.get(i).isDefaultDistribution())
+            viewHolder.distribution.setText(grades.get(i).getDistribution() + "%");
+        else
+            viewHolder.distribution.setText(subject.getDefaultDistribution() + "%");
+
 
         viewHolder.editBT.setOnClickListener(new View.OnClickListener() {
             @Override

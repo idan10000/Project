@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".pages.reminders.Reminders">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include layout="@layout/toolbar_layout" />
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="40dp"
+                android:text="Choose subject:"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@+id/textView5"
+                app:layout_constraintEnd_toStartOf="@+id/spRemindersSubjects"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Spinner
+                android:id="@+id/spRemindersSubjects"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="40dp"
+                app:layout_constraintBottom_toTopOf="@+id/textView5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/textView2" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="40dp"
+                android:text="Choose Date:"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@+id/textView6"
+                app:layout_constraintEnd_toStartOf="@+id/etRemindersDate"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <EditText
+                android:id="@+id/etRemindersDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:ems="10"
+                android:inputType="date"
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/textView5" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="30dp"
+                android:text="Hours Per Day:"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@+id/textView9"
+                app:layout_constraintEnd_toStartOf="@+id/spRemindersStudyHours"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Spinner
+                android:id="@+id/spRemindersStudyHours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="30dp"
+                app:layout_constraintBottom_toTopOf="@+id/textView9"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/textView6" />
+
+            <Button
+                android:id="@+id/btRemindersConfirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="180dp"
+                android:text="Confirm Study Reminders"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:lineSpacingExtra="4sp"
+                android:text="@string/reminders_explanation"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toTopOf="@+id/textView2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView8"
+                app:layout_constraintVertical_bias="0.19999999" />
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Expanation:"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"
+                android:text="Number of Days:"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@+id/btRemindersConfirm"
+                app:layout_constraintEnd_toStartOf="@+id/spRemindersNumOfDays"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Spinner
+                android:id="@+id/spRemindersNumOfDays"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="30dp"
+                app:layout_constraintBottom_toTopOf="@+id/btRemindersConfirm"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/textView9" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </LinearLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:menu="@menu/activity_navigation_bar_drawer" />
+
+</android.support.v4.widget.DrawerLayout>

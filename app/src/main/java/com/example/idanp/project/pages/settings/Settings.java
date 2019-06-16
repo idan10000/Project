@@ -165,10 +165,15 @@ public class Settings extends BaseActivity implements AdapterView.OnItemSelected
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
+                    String sbjNames = "";
                     for (QueryDocumentSnapshot doc : task.getResult()){
                         Log.d(TAG, "onComplete: added into subjectNames");
                         subjectNames.add(doc.get("name").toString());
+                        sbjNames += doc.get("name").toString() + ",";
                     }
+                    editor.putString("subjectNames", sbjNames);
+                    editor.commit();
+
                     initRecyclerView();
                 }
             }
@@ -227,7 +232,7 @@ public class Settings extends BaseActivity implements AdapterView.OnItemSelected
             l_AllNames += l_name + ",";
             editor.putString("subjectNames", l_AllNames);
             editor.commit();
-            addSubjectToMenuEnd(l_name);
+            onCreateDrawer();
             db.collection("users").document(userID).collection("subjects").document(l_name).set(l_data);
         }
         else Toast.makeText(this, "Subject already exists", Toast.LENGTH_SHORT).show();

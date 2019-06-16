@@ -3,8 +3,9 @@
     package="com.example.idanp.project">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.SET_ALARM"/>
 
     <application
         android:allowBackup="true"
@@ -13,10 +14,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".pages.reminders.Reminders"/>
+
+        <receiver android:name="com.example.idanp.project.pages.reminders.NotificationReceiver">
+            <intent-filter>
+                <action android:name="com.example.idanp.project.pages.reminders.Studied" />
+                <action android:name="com.example.idanp.project.pages.reminders.MY_NOTIFICATION_MESSAGE"/>
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".supportClasses.BaseActivity"
             android:label="@string/title_activity_navigation_bar"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".pages.Register" />
         <activity android:name=".pages.settings.Settings" />
         <activity android:name=".pages.HomePage" />
@@ -25,7 +35,7 @@
         <activity android:name=".pages.Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

@@ -74,6 +74,8 @@ public class GradeTemplate extends BaseActivity {
     private int day, month, year;
     private ArrayList<String> picturesURLs;
     private Date storageDate;
+    private SharedPreferences.Editor editor;
+
 
     private Intent data;
 
@@ -93,6 +95,7 @@ public class GradeTemplate extends BaseActivity {
         pictures = findViewById(R.id.rvGradePictures);
 
         sharedPref = getSharedPreferences("storage",MODE_PRIVATE);
+        editor = sharedPref.edit();
         userID = sharedPref.getString("userID", "");
 
         data = getIntent();
@@ -180,7 +183,7 @@ public class GradeTemplate extends BaseActivity {
                     Toast.makeText(context, "Please enter a grade...", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (distribution.length() != 0) {
+                if (distribution.getText().length() != 0) {
                     l_distribution = Integer.parseInt(distribution.getText().toString());
                 }
                 else l_distribution = -1;
@@ -190,7 +193,7 @@ public class GradeTemplate extends BaseActivity {
                     return;
                 }
 
-                gradeObject = new Grade(name.getText().toString(), l_grade, docReference.getId(), year, month, day, Integer.parseInt(distribution.getText().toString()), picturesURLs);
+                gradeObject = new Grade(name.getText().toString(), l_grade, docReference.getId(), year, month, day, l_distribution, picturesURLs);
 
                 try {
                     gradeObject.setDistribution(l_distribution);
@@ -201,6 +204,9 @@ public class GradeTemplate extends BaseActivity {
                     return;
                 }
                 docReference.set(gradeObject);
+
+                editor.putString("lastGrade",name.getText().toString() + "  Grade: " + l_grade);
+                editor.commit();
                 Intent intent = new Intent(context, SubjectTemplate.class);
                 intent.putExtra("subjectName", subjectName);
                 startActivity(intent);

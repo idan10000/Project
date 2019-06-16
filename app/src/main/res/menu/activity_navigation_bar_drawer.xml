@@ -16,12 +16,18 @@
             android:icon="@drawable/ic_settings"
             android:title="@string/action_settings" />
 
+        <item
+            android:id="@+id/nav_reminders"
+            android:icon="@drawable/ic_add_alert_black_24dp"
+            android:title="@string/study_reminders" />
 
 
-    <item
-        android:title="Subjects"
-        android:id="@+id/nav_subjects"
-        android:enabled="false" />
+        <item
+            android:id="@+id/nav_subjects"
+            android:checkable="false"
+            android:checked="false"
+            android:enabled="false"
+            android:title="@string/subjects" />
 
 
     </group>

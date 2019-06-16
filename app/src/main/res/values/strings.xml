@@ -2,6 +2,29 @@
     <string name="app_name">Project</string>
     <string name="title_activity_settings">Settings</string>
 
+    <!-- Reminders Strings -->
+    <string name="reminders_explanation">Setup a support system to help you organize your time in preparation for an upcoming test.
+        \n Choose a the subject of the test, it\'s date and the amount of time you want to study per day prior to the test. Leave it on automatic for best results</string>
+    <string-array name="reminders_StudyHours">
+        <item>Automatic</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="reminders_NumOfDays">
+        <item>Automatic</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+    </string-array>
+
+
     <!-- GradeTemplate Strings -->
     <string name="grade_date_warning">*Please make sure to put in the exact date of the test for correct statistics</string>
     <string name="distribution_hint"><font size="10sp">Leave empty for equal distribution</font></string>
@@ -61,4 +84,6 @@
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
     <string name="latest_grade">Latest Grade:</string>
+    <string name="subjects">Subjects</string>
+    <string name="study_reminders">Study Reminders</string>
 </resources>
