@@ -1,16 +1,20 @@
 package com.example.idanp.project.pages.grade;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -30,7 +34,6 @@ import com.example.idanp.project.supportClasses.BaseActivity;
 import com.example.idanp.project.supportClasses.Date;
 import com.example.idanp.project.supportClasses.Grade;
 import com.example.idanp.project.supportClasses.baseClasses.BaseGrade;
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -46,6 +49,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -59,7 +64,6 @@ public class GradeTemplate extends BaseActivity implements PictureRecyclerViewAd
 
     private SharedPreferences sharedPref;
 
-
     private static final int CAMERA_REQUEST_CODE = 1;
     private final Context context = this;
 
@@ -70,15 +74,15 @@ public class GradeTemplate extends BaseActivity implements PictureRecyclerViewAd
     RecyclerView pictures;
     ImageView fullPicture;
 
-
     private DocumentReference docReference;
-    private String userID, subjectName, gradeName;
+    private String userID, subjectName;
     private Grade gradeObject;
     private int day, month, year;
     private ArrayList<String> picturesURLs;
-    private Date storageDate;
     private SharedPreferences.Editor editor;
-
+    private String currentPhotoPath;
+    private Uri newImageUri;
+    private File newImageFile;
 
     private Intent data;
 
@@ -99,7 +103,7 @@ public class GradeTemplate extends BaseActivity implements PictureRecyclerViewAd
         fullPicture = findViewById(R.id.ivGradesFullPicture);
         fullPicture.setVisibility(View.GONE);
 
-        sharedPref = getSharedPreferences("storage",MODE_PRIVATE);
+        sharedPref = getSharedPreferences("storage", MODE_PRIVATE);
         editor = sharedPref.edit();
         userID = sharedPref.getString("userID", "");
 
@@ -124,10 +128,8 @@ public class GradeTemplate extends BaseActivity implements PictureRecyclerViewAd
         addPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    startActivityForResult(intent, CAMERA_REQUEST_CODE);
-                }
+                checkFilePermissions();
+                dispatchTakePictureIntent();
             }
         });
 
@@ -146,8 +148,6 @@ public class GradeTemplate extends BaseActivity implements PictureRecyclerViewAd
                 day = dayOfMonth;
                 month = monthOfYear;
                 year = theYear;
-
-                storageDate = new Date(theYear,monthOfYear,dayOfMonth);
 
                 String myFormat = "dd/MM/yyyy";
                 SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
@@ -176,24 +176,22 @@ public class GradeTemplate extends BaseActivity implements PictureRecyclerViewAd
                 int l_grade;
                 int l_distribution;
 
-                if(grade.getText().length() > 0) {
+                if (grade.getText().length() > 0) {
                     l_grade = Integer.parseInt(grade.getText().toString());
 
                     if (l_grade < 0 || l_grade > 100) {
                         Toast.makeText(context, "The grade has to be between 0-100...", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                }
-                else {
+                } else {
                     Toast.makeText(context, "Please enter a grade...", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (distribution.getText().length() != 0) {
                     l_distribution = Integer.parseInt(distribution.getText().toString());
-                }
-                else l_distribution = -1;
+                } else l_distribution = -1;
 
-                if(day == 0 || year == 0 || month == 0){
+                if (day == 0 || year == 0 || month == 0) {
                     Toast.makeText(context, "Please enter a date...", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -210,7 +208,7 @@ public class GradeTemplate extends BaseActivity implements PictureRecyclerViewAd
                 }
                 docReference.set(gradeObject);
 
-                editor.putString("lastGrade",name.getText().toString() + "  Grade: " + l_grade);
+                editor.putString("lastGrade", name.getText().toString() + "  Grade: " + l_grade);
                 editor.commit();
                 Intent intent = new Intent(context, SubjectTemplate.class);
                 intent.putExtra("subjectName", subjectName);
@@ -225,15 +223,15 @@ public class GradeTemplate extends BaseActivity implements PictureRecyclerViewAd
                     Log.w(TAG, "onEvent: Listen failed", e);
                     return;
                 }
-                if(gradeObject!=null)
+                if (gradeObject != null)
                     Log.d(TAG, "onEvent: change detected in the db at the " + gradeObject.getName() + " document");
+                initPictures();
             }
 
         });
 
 
     }
-
 
     /**
      * Initializes the fields from the data inside the database if it exists. Includes pictures
@@ -273,13 +271,6 @@ public class GradeTemplate extends BaseActivity implements PictureRecyclerViewAd
         progressBar.setVisibility(View.GONE);
     }
 
-    public Uri getImageUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
-    }
-
     /**
      * Checks if an image was captured successfully and then uploads it to fireStorage.
      * Also inserts the url into the fireStore database at the grade location under the parameter "pictures" with the url as the value
@@ -298,43 +289,105 @@ public class GradeTemplate extends BaseActivity implements PictureRecyclerViewAd
 
             progressBar.setVisibility(View.VISIBLE);
 
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            final StorageReference filepath = storage.child(userID).child(subjectName).child(newImageUri.getLastPathSegment());
 
-            Uri uri = getImageUri(context,imageBitmap);
-
-
-            final StorageReference filepath = storage.child(userID).child(subjectName).child(uri.getLastPathSegment() + ".jpg");
-
-            filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            filepath.putFile(newImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Log.d(TAG, "onSuccess: Picture successfully uploaded");
                     Toast.makeText(GradeTemplate.this, "Picture successfully uploaded", Toast.LENGTH_SHORT).show();
-                    progressBar.setVisibility(View.GONE);
 
                     Task<Uri> downloadUri = taskSnapshot.getStorage().getDownloadUrl().addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Log.e(TAG, "onFailure: cry2", e);
+                            Log.e(TAG, "onFailure: ", e);
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String generatedFilePath = uri.toString();
+                            Toast.makeText(context, generatedFilePath, Toast.LENGTH_SHORT).show();
+                            docReference.update("pictures", FieldValue.arrayUnion(generatedFilePath)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d(TAG, "onSuccess: initializing pictures");
+                                    initPictures();
+                                    progressBar.setVisibility(View.GONE);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.e(TAG, "onFailure: Failed to upload picture", e);
+                                }
+                            });
+                            picturesURLs.add(generatedFilePath);
                         }
                     });
-
-                    if(downloadUri.isSuccessful()){
-                        String generatedFilePath = downloadUri.getResult().toString();
-                        Toast.makeText(context, generatedFilePath, Toast.LENGTH_SHORT).show();
-                        docReference.update("pictures", FieldValue.arrayUnion(generatedFilePath));
-                        picturesURLs.add(generatedFilePath);
-                    }
                 }
             });
 
         }
     }
 
+    private void checkFilePermissions() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            int permissionCheck = GradeTemplate.this.checkSelfPermission("Manifest.permission.READ_EXTERNAL_STORAGE");
+            permissionCheck += GradeTemplate.this.checkSelfPermission("Manifest.permission.WRITE_EXTERNAL_STORAGE");
+            permissionCheck += GradeTemplate.this.checkSelfPermission("Manifest.permission.CAMERA");
+            if (permissionCheck != 0) {
+                this.requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, 1001); //Any number
+            }
+        } else {
+            Log.d(TAG, "checkBTPermissions: No need to check permissions. SDK version < LOLLIPOP.");
+        }
+    }
+
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = Calendar.getInstance().getTime().getTime() + "";
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    /**
+     * Creates an intent to take a photo
+     */
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            newImageFile = null;
+            try {
+                newImageFile = createImageFile();
+            } catch (IOException ex) {
+                Log.e(TAG, "dispatchTakePictureIntent: Error occurred while creating the File", ex);
+
+            }
+            // Continue only if the File was successfully created
+            if (newImageFile != null) {
+                newImageUri = FileProvider.getUriForFile(this,
+                        "com.example.android.fileprovider",
+                        newImageFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, newImageUri);
+                startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
+            }
+        }
+    }
+
     @Override
     public void onBackPressed() {
-        if(fullPicture.getVisibility() == View.VISIBLE)
+        if (fullPicture.getVisibility() == View.VISIBLE)
             fullPicture.setVisibility(View.GONE);
         else
             super.onBackPressed();
