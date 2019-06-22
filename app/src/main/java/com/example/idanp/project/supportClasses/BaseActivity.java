@@ -31,6 +31,7 @@ public class BaseActivity extends AppCompatActivity
     private SharedPreferences sharedPref;
     private String[] subjectNames;
     private ActionBarDrawerToggle toggle;
+    private NavigationView navigationView;
 
     protected void onCreateDrawer(){
         createNotificationChannel();
@@ -43,12 +44,13 @@ public class BaseActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         Menu menu = navigationView.getMenu();
 
         for (int i = 0; i < subjectNames.length; i++){
             menu.add(0, i, menu.size(), menuIconWithText(getDrawable(R.drawable.ic_subject),subjectNames[i]));
         }
+
 
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -137,6 +139,19 @@ public class BaseActivity extends AppCompatActivity
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
+    }
+
+    public void menuReset(){
+        Menu menu = navigationView.getMenu();
+        menu.removeGroup(0);
+//        for (int i = 0; i < subjectNames.length; i++){
+//            menu.removeItem(i);
+//        }
+        subjectNames = sharedPref.getString("subjectNames","").split(",");
+        for (int i = 0; i < subjectNames.length; i++){
+            menu.add(0, i, menu.size(), menuIconWithText(getDrawable(R.drawable.ic_subject),subjectNames[i]));
+        }
+
     }
 
 }

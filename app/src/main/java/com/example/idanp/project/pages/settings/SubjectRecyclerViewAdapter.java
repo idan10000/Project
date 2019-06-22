@@ -67,6 +67,7 @@ public class SubjectRecyclerViewAdapter extends RecyclerView.Adapter<SubjectRecy
                                         Log.d(TAG,  "deleting from the database");
                                     }
                                 });
+
                                 break;
 
                             case DialogInterface.BUTTON_NEGATIVE:

@@ -151,6 +151,7 @@ public class Settings extends BaseActivity implements AdapterView.OnItemSelected
 
                 Log.d(TAG, "onEvent: subject database change detected");
                 initSubjectNames();
+                Settings.super.menuReset();
             }
         });
 
@@ -173,7 +174,7 @@ public class Settings extends BaseActivity implements AdapterView.OnItemSelected
                     }
                     editor.putString("subjectNames", sbjNames);
                     editor.commit();
-
+                    Settings.super.menuReset();
                     initRecyclerView();
                 }
             }
