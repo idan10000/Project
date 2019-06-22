@@ -31,6 +31,7 @@ public class PictureRecyclerViewAdapter extends RecyclerView.Adapter<PictureRecy
     private StorageReference storageReference;
     private ArrayList<String> imageUrls;
     private Context context;
+    private PictureRecyclerViewListener listener;
 
     public PictureRecyclerViewAdapter(Context context, ArrayList<String> imageUrls, DocumentReference dbReference, StorageReference storageReference) {
         this.imageUrls = imageUrls;
@@ -42,6 +43,7 @@ public class PictureRecyclerViewAdapter extends RecyclerView.Adapter<PictureRecy
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        listener = (PictureRecyclerViewListener) context;
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.grade_pictures_recyclerview, viewGroup, false);
         PictureRecyclerViewAdapter.ViewHolder holder = new PictureRecyclerViewAdapter.ViewHolder(view);
         return holder;
@@ -56,6 +58,12 @@ public class PictureRecyclerViewAdapter extends RecyclerView.Adapter<PictureRecy
                 .asBitmap()
                 .load(curImage)
                 .into(viewHolder.image);
+        viewHolder.image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.openImage(curImage);
+            }
+        });
         viewHolder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -110,5 +118,9 @@ public class PictureRecyclerViewAdapter extends RecyclerView.Adapter<PictureRecy
             image = itemView.findViewById(R.id.ivGradePRVImage);
             delete = itemView.findViewById(R.id.tvGradePRVDelete);
         }
+    }
+
+    public interface PictureRecyclerViewListener {
+        void openImage(String url);
     }
 }

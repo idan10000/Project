@@ -19,9 +19,11 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.idanp.project.R;
 import com.example.idanp.project.pages.subject.SubjectTemplate;
 import com.example.idanp.project.supportClasses.BaseActivity;
@@ -49,7 +51,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class GradeTemplate extends BaseActivity {
+public class GradeTemplate extends BaseActivity implements PictureRecyclerViewAdapter.PictureRecyclerViewListener {
 
     private static final String TAG = "GradeTemplate";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -66,6 +68,7 @@ public class GradeTemplate extends BaseActivity {
     Button confirmChanges;
     ProgressBar progressBar;
     RecyclerView pictures;
+    ImageView fullPicture;
 
 
     private DocumentReference docReference;
@@ -93,6 +96,8 @@ public class GradeTemplate extends BaseActivity {
         confirmChanges = findViewById(R.id.btGradeConfirm);
         progressBar = findViewById(R.id.pbGrade);
         pictures = findViewById(R.id.rvGradePictures);
+        fullPicture = findViewById(R.id.ivGradesFullPicture);
+        fullPicture.setVisibility(View.GONE);
 
         sharedPref = getSharedPreferences("storage",MODE_PRIVATE);
         editor = sharedPref.edit();
@@ -325,5 +330,22 @@ public class GradeTemplate extends BaseActivity {
             });
 
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(fullPicture.getVisibility() == View.VISIBLE)
+            fullPicture.setVisibility(View.GONE);
+        else
+            super.onBackPressed();
+    }
+
+    @Override
+    public void openImage(String url) {
+        Glide.with(context)
+                .asBitmap()
+                .load(url)
+                .into(fullPicture);
+        fullPicture.setVisibility(View.VISIBLE);
     }
 }
